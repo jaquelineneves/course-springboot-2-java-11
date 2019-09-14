@@ -3,6 +3,8 @@ package com.educandoweb.course.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -47,9 +49,13 @@ public class UserService {
 	
 	//atualizar um usuario (passa o id, e um objeto usuario com os dados a serem atualizados)
 	public User update(Long id, User obj) {
-		User entity = repository.getOne(id);
-		updateData(entity, obj); //atualizar o meu entity com os dados do obj
-		return repository.save(entity);
+		try {
+			User entity = repository.getOne(id);
+			updateData(entity, obj); //atualizar o meu entity com os dados do obj
+			return repository.save(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
 	//atualiza os dados do entity com base no que chegou no obj
