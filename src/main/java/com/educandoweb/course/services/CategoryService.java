@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.educandoweb.course.dto.CategoryDTO;
 import com.educandoweb.course.entities.Category;
-import com.educandoweb.course.entities.User;
 import com.educandoweb.course.repositories.CategoryRepository;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
 
@@ -53,18 +53,20 @@ public class CategoryService {
 	}
 	
 	//atualizar um usuario (passa o id, e um objeto usuario com os dados a serem atualizados)
-	public Category update(Long id, Category obj) {
+	@Transactional
+	public CategoryDTO update(Long id, CategoryDTO dto) {
 		try {
 			Category entity = repository.getOne(id);
-			updateData(entity, obj); //atualizar o meu entity com os dados do obj
-			return repository.save(entity);
+			updateData(entity, dto); //atualizar o meu entity com os dados do obj
+			entity = repository.save(entity);
+			return new CategoryDTO(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
 	}
 
 	//atualiza os dados do entity com base no que chegou no obj
-	private void updateData(Category entity, Category obj) {
-		entity.setName(obj.getName());	
+	private void updateData(Category entity, CategoryDTO dto) {
+		entity.setName(dto.getName());
 	}
 }
