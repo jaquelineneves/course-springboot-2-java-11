@@ -13,6 +13,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.educandoweb.course.dto.CategoryDTO;
+import com.educandoweb.course.dto.CategoryInsertDTO;
 import com.educandoweb.course.entities.Category;
 import com.educandoweb.course.repositories.CategoryRepository;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
@@ -37,8 +38,10 @@ public class CategoryService {
 	}
 	
 	//retorna o usuario salvo
-	public Category insert(Category obj) {
-		return repository.save(obj);
+	public CategoryDTO insert(CategoryInsertDTO dto) {
+		Category entity = dto.toEntity();//converte de UserInsertDTO para entity
+		entity = repository.save(entity);
+		return new CategoryDTO(entity);
 	}
 	
 	//deletar o usuario do bd

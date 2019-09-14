@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.educandoweb.course.dto.CategoryDTO;
-import com.educandoweb.course.entities.Category;
+import com.educandoweb.course.dto.CategoryInsertDTO;
 import com.educandoweb.course.services.CategoryService;
 
 @RestController
@@ -40,10 +40,10 @@ public class CategoryResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Category> insert(@RequestBody Category obj){
-		obj = service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(obj);
+	public ResponseEntity<CategoryDTO> insert(@RequestBody CategoryInsertDTO dto){
+		CategoryDTO newDto = service.insert(dto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(newDto);
 	}
 	
 	@DeleteMapping(value = "/{id}")
