@@ -13,6 +13,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.educandoweb.course.dto.UserDTO;
+import com.educandoweb.course.dto.UserInsertDTO;
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.repositories.UserRepository;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
@@ -37,8 +38,10 @@ public class UserService {
 	}
 	
 	//retorna o usuario salvo
-	public User insert(User obj) {
-		return repository.save(obj);
+	public UserDTO insert(UserInsertDTO dto) {
+		User entity = dto.toEntity();//converte de UserInsertDTO para entity
+		entity = repository.save(entity);
+		return new UserDTO(entity);
 	}
 	
 	//deletar o usuario do bd
