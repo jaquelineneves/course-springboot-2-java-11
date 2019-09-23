@@ -8,6 +8,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.educandoweb.course.dto.CategoryDTO;
@@ -18,6 +20,8 @@ import com.educandoweb.course.entities.Product;
 import com.educandoweb.course.repositories.CategoryRepository;
 import com.educandoweb.course.repositories.ProductRepository;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
+
+import services.exceptions.DatabaseException;
 
 @Service
 public class ProductService {
@@ -60,6 +64,16 @@ public class ProductService {
 		}
 	}
 
+	public void delete(Long id) {
+		try {
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+	
 	private void updateData(Product entity, ProductCategoriesDTO dto) {
 		entity.setName(dto.getName());
 		entity.setDescription(dto.getDescription());
