@@ -2,20 +2,34 @@ package com.educandoweb.course.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.educandoweb.course.entities.User;
 
 public class UserInsertDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
 	private Long id;
+	@NotEmpty(message = " can't be empty")
+	@Length(min = 5, max = 80, message = "length must be beteween 5 and 80")
 	private String name;
+
+	@NotEmpty(message = " can't be empty")
+	@Email(message = "invalid email")
 	private String email;
+
+	@NotEmpty(message = " can't be empty")
+	@Length(min = 8, max = 20, message = "length must be beteween 8 and 20")
 	private String phone;
+
+	@NotEmpty(message = " can't be empty")
 	private String password;
-	
+
 	public UserInsertDTO() {
-		
+
 	}
 
 	public UserInsertDTO(Long id, String name, String email, String phone, String password) {
@@ -26,7 +40,7 @@ public class UserInsertDTO implements Serializable {
 		this.phone = phone;
 		this.password = password;
 	}
-	
+
 	public UserInsertDTO(User entity) {
 		this.id = entity.getId();
 		this.name = entity.getName();
@@ -66,7 +80,7 @@ public class UserInsertDTO implements Serializable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
