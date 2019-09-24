@@ -1,8 +1,8 @@
 package com.educandoweb.course.services;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.educandoweb.course.dto.CategoryDTO;
@@ -20,6 +21,7 @@ import com.educandoweb.course.entities.Product;
 import com.educandoweb.course.repositories.CategoryRepository;
 import com.educandoweb.course.repositories.ProductRepository;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
+
 
 import services.exceptions.DatabaseException;
 
@@ -33,9 +35,9 @@ public class ProductService {
 	private CategoryRepository categoryRepository;
 	
 	
-	public List<ProductDTO> findAll() {
-		List<Product> list = repository.findAll();
-		return list.stream().map(e -> new ProductDTO(e)).collect(Collectors.toList());
+	public Page<ProductDTO> findAllPaged(Pageable pageable) {
+		Page<Product> list = repository.findAll(pageable);
+		return list.map(e -> new ProductDTO(e));
 	}
 	
 	public ProductDTO findById(Long id) {
