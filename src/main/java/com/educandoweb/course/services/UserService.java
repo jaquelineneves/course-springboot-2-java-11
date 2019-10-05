@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.educandoweb.course.dto.UserDTO;
@@ -22,6 +23,9 @@ import services.exceptions.DatabaseException;
 
 @Service
 public class UserService {
+	
+	@Autowired
+	private BCryptPasswordEncoder  passwordEncode;
 	
 	@Autowired
 	private UserRepository repository;
@@ -40,6 +44,7 @@ public class UserService {
 	//retorna o usuario salvo
 	public UserDTO insert(UserInsertDTO dto) {
 		User entity = dto.toEntity();//converte de UserInsertDTO para entity
+		entity.setPassword(passwordEncode.encode(dto.getPassword()));
 		entity = repository.save(entity);
 		return new UserDTO(entity);
 	}
