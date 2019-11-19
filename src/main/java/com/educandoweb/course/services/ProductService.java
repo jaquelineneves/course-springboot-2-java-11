@@ -1,17 +1,18 @@
 package com.educandoweb.course.services;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;import java.util.List;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.educandoweb.course.dto.CategoryDTO;
 import com.educandoweb.course.dto.ProductCategoriesDTO;
@@ -21,7 +22,6 @@ import com.educandoweb.course.entities.Product;
 import com.educandoweb.course.repositories.CategoryRepository;
 import com.educandoweb.course.repositories.ProductRepository;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
-
 
 import services.exceptions.DatabaseException;
 
@@ -94,5 +94,14 @@ public class ProductService {
 			Category category = categoryRepository.getOne(dto.getId());
 			entity.getCategories().add(category);
 		}
+	}
+	
+	@Transactional(readOnly=true)
+	public Page<ProductDTO> findByCategoryPaged(Long categoryId, PageRequest pageRequest) {
+		// TODO Auto-generated method stub
+		Category category = categoryRepository.getOne(categoryId);
+		Page<Product> products = repository.findByCategory(category,pageRequest);
+
+		return products.map(e -> new ProductDTO(e));
 	}
 }
