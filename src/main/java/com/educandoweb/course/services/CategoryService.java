@@ -2,6 +2,7 @@ package com.educandoweb.course.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 import com.educandoweb.course.dto.CategoryDTO;
 import com.educandoweb.course.dto.CategoryInsertDTO;
 import com.educandoweb.course.entities.Category;
+import com.educandoweb.course.entities.Product;
 import com.educandoweb.course.repositories.CategoryRepository;
+import com.educandoweb.course.repositories.ProductRepository;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
 
 import services.exceptions.DatabaseException;
@@ -25,6 +28,9 @@ public class CategoryService {
 	
 	@Autowired
 	private CategoryRepository repository;
+	
+	@Autowired
+	private ProductRepository productRepository;
 	
 	public List<CategoryDTO> findAll() {
 		List<Category> list = repository.findAll();
@@ -71,5 +77,14 @@ public class CategoryService {
 	//atualiza os dados do entity com base no que chegou no obj
 	private void updateData(Category entity, CategoryDTO dto) {
 		entity.setName(dto.getName());
+	}
+	
+	@Transactional(readyOnly = true)
+	public List<CategoryDTO> findByProduct(Long productId) {
+		Product product = productRepository.getOne(productId);
+		Set<Category> set= product.getCategories();
+
+		return set.stream().map(e -> new CategoryDTO(e)).collect(Collectors.toList());
+
 	}
 }
