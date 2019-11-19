@@ -25,7 +25,7 @@ import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
 import services.exceptions.DatabaseException;
 
 @Service
-public class UserService implements  UserDetailsService {
+public class UserService implements UserDetailsService {
 	
 	@Autowired
 	private BCryptPasswordEncoder  passwordEncode;
