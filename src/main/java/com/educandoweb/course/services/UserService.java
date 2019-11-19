@@ -33,12 +33,16 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	private UserRepository repository;
 	
+	@Autowired
+	private AuthService authService;
+	
 	public List<UserDTO> findAll() {
 		List<User> list = repository.findAll();
 		return list.stream().map(e -> new UserDTO(e)).collect(Collectors.toList());
 	}
 	
 	public UserDTO findById(Long id) {
+		authService.validateSelfOrAdmin(id);
 		Optional<User> obj = repository.findById(id);
 		User entity = obj.orElseThrow(() -> new ResourceNotFoundException(id));
 		return new UserDTO(entity);
@@ -66,6 +70,7 @@ public class UserService implements UserDetailsService {
 	//atualizar um usuario (passa o id, e um objeto usuario com os dados a serem atualizados)
 	@Transactional
 	public UserDTO update(Long id, UserDTO dto) {
+		authService.validateSelfOrAdmin(id);
 		try {
 			User entity = repository.getOne(id);
 			updateData(entity, dto); //atualizar o meu entity com os dados do obj
