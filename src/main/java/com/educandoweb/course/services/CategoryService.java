@@ -6,12 +6,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.educandoweb.course.dto.CategoryDTO;
 import com.educandoweb.course.dto.CategoryInsertDTO;
@@ -79,7 +79,7 @@ public class CategoryService {
 		entity.setName(dto.getName());
 	}
 	
-	@Transactional(readyOnly = true)
+	@Transactional(readOnly = true)
 	public List<CategoryDTO> findByProduct(Long productId) {
 		Product product = productRepository.getOne(productId);
 		Set<Category> set= product.getCategories();
