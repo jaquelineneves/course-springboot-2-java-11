@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.educandoweb.course.dto.OrderDTO;
 import com.educandoweb.course.services.OrderService;
@@ -20,6 +21,7 @@ public class OrderResource {
 	private OrderService service;
 	
 	//retorna respostas de requisições web
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@GetMapping
 	public ResponseEntity<List<OrderDTO>> findAll() {
 		List<OrderDTO> list = service.findAll();		
